@@ -3,8 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>chatUrls</groupId>
-    <artifactId>chatUrls</artifactId>
+    <groupId>ru.ykey</groupId>
+    <artifactId>skype2web</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
 
@@ -32,6 +32,7 @@
         <commons-io.version>2.4</commons-io.version>
         <commons-lang3.version>3.1</commons-lang3.version>
         <commons-collections.version>3.2.1</commons-collections.version>
+        <tomcat.version>7.0.42</tomcat.version>
 
         <!--Testing-->
         <testng.version>6.8</testng.version>
@@ -67,6 +68,17 @@
         </testResources>
         <plugins>
             <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <url>http://192.168.154.15:8080/manager/text</url>
+                    <!--<url>http://192.168.0.104:8080/manager</url>-->
+                    <server>skype2web-server</server>
+                    <path>/skype2web</path>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>9.0.3.v20130506</version>
@@ -91,7 +103,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.3</version>
                 <configuration>
-                    <warName>skype2web</warName>
+                    <!--<warName>skype2web</warName>-->
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
@@ -501,6 +513,20 @@
             <artifactId>easymock</artifactId>
             <version>${easymock.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- WebSocket -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

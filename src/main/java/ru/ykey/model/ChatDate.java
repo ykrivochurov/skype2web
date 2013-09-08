@@ -1,5 +1,6 @@
 package ru.ykey.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
@@ -8,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -19,7 +21,7 @@ import java.util.Date;
 @Table(name = "chat_date")
 public class ChatDate extends BaseEntity {
 
-    @Column
+    @Column(name = "message_count")
     private Integer count = 0;
 
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
@@ -28,6 +30,7 @@ public class ChatDate extends BaseEntity {
     @Column
     private Date date;
 
+    @JsonIgnore
     @ManyToOne
     private Chat chat;
 
@@ -49,6 +52,11 @@ public class ChatDate extends BaseEntity {
 
     public Chat getChat() {
         return chat;
+    }
+
+    @Transient
+    public Long getIdOfChat() {
+        return chat.getId();
     }
 
     public void setChat(Chat chat) {

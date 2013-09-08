@@ -6,7 +6,7 @@ angular.module('chartUrls').
         {
           loadAll: {method: 'GET', isArray: true},
           loadById: {method: 'GET', params: {id: '@id'}},
-          loadDatesById: {method: 'GET', params: {id: '@id', dates: 'dates'}}
+          loadDatesById: {method: 'GET', params: {id: '@id', dates: 'dates'}, isArray: true}
         })
     };
   });

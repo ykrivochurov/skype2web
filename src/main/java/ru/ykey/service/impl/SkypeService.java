@@ -1,11 +1,14 @@
 package ru.ykey.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.skype.ChatMessage;
 import com.skype.ChatMessageAdapter;
 import com.skype.Skype;
 import com.skype.SkypeException;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +19,8 @@ import ru.ykey.model.Chat;
 import ru.ykey.model.ChatDate;
 import ru.ykey.model.FeedItem;
 import ru.ykey.service.ISkypeService;
+import ru.ykey.service.IWebSocketService;
+import ru.ykey.util.TextParser;
 
 import javax.annotation.PostConstruct;
 import java.util.Date;
@@ -28,6 +33,11 @@ import java.util.Date;
 @Transactional
 public class SkypeService implements ISkypeService {
 
+    private static Logger logger = LoggerFactory.getLogger(SkypeService.class);
+
+    @Autowired
+    private IWebSocketService webSocketService;
+
     @Autowired
     private ChatRepository chatRepository;
 
@@ -39,16 +49,20 @@ public class SkypeService implements ISkypeService {
 
     @PostConstruct
     public void init() throws SkypeException {
-        Skype.addChatMessageListener(new ChatMessageAdapter() {
-            public void chatMessageReceived(ChatMessage received) throws SkypeException {
-                if (received.getType().equals(ChatMessage.Type.SAID)) {
-                    Chat chat = createChatIfNotExists(received);
-                    createFeedItem(received, chat);
-                    createChatDateIfNotExists(chat);
-                    System.out.println(received);
+        try {
+            Skype.addChatMessageListener(new ChatMessageAdapter() {
+                public void chatMessageReceived(ChatMessage received) throws SkypeException {
+                    if (received.getType().equals(ChatMessage.Type.SAID)) {
+                        Chat chat = createChatIfNotExists(received);
+                        createFeedItem(received, chat);
+                        createChatDateIfNotExists(chat);
+                        System.out.println(received);
+                    }
                 }
-            }
-        });
+            });
+        } catch (IllegalStateException e) {
+            logger.debug("OS not supported", e);
+        }
     }
 
     //todo сделать отсылку сообщения сразу в webSocket
@@ -73,10 +87,17 @@ public class SkypeService implements ISkypeService {
         feedItem.setCreationDate(new Date());
         feedItem.setCreator(StringUtils.isNotBlank(chatMessage.getSenderDisplayName()) ?
                 chatMessage.getSenderDisplayName() : chatMessage.getSender().getId());
-        feedItem.setText(chatMessage.getContent());
+        feedItem.setText(
+                TextParser.parse(chatMessage.getContent()));
         feedItem.setChat(chat);
         feedItem.setMessageId(chatMessage.getId());
-        return feedItemRepository.save(feedItem);
+        feedItem = feedItemRepository.save(feedItem);
+        try {
+            webSocketService.send(chat, feedItem);
+        } catch (JsonProcessingException e) {
+            //do nothing
+        }
+        return feedItem;
     }
 
     private ChatDate createChatDateIfNotExists(Chat chat) {
@@ -86,7 +107,7 @@ public class SkypeService implements ISkypeService {
             chatDate = new ChatDate();
             chatDate.setChat(chat);
             chatDate.setDate(dayStartDateTime.toDate());
-            chatDate.setCount(0);
+            chatDate.setCount(1);
         } else {
             chatDate.setCount(chatDate.getCount() + 1);
         }

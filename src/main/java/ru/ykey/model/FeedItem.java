@@ -1,5 +1,6 @@
 package ru.ykey.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
@@ -8,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -29,9 +31,10 @@ public class FeedItem extends BaseEntity {
     private String creator;
 
     @NotNull
-    @Column
+    @Column(length = 5000)
     private String text;
 
+    @JsonIgnore
     @ManyToOne
     private Chat chat;
 
@@ -68,6 +71,11 @@ public class FeedItem extends BaseEntity {
 
     public void setChat(Chat chat) {
         this.chat = chat;
+    }
+
+    @Transient
+    public Long getIdOfChat() {
+        return chat.getId();
     }
 
     public String getMessageId() {

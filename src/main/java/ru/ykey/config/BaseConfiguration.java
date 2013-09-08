@@ -11,6 +11,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  */
 @Configuration
 @EnableJpaRepositories(value = {"ru.ykey.dao"})
-@ComponentScan(basePackages = {"ru.ykey.service"})
+@ComponentScan(basePackages = {"ru.ykey.service", "ru.ykey.web.websocket"})
 public class BaseConfiguration {
 }
