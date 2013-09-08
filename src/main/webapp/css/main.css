@@ -1,0 +1,80 @@
+/*body {
+    background-color: #f5f5f5;
+    box-sizing: content-box;
+}
+*/
+input {
+    box-sizing: content-box;
+}
+
+.top-buffer {
+    margin-top: 10px;
+}
+
+.controls.readonly {
+    padding-top: 5px;
+}
+
+.ng-cloak {
+    display:none !important;
+}
+
+.publishedMeeting {
+    background-color: rgba(65, 255, 25, 0.6);
+    border-radius: 4px;
+}
+
+.pastMeeting {
+    background-color: rgba(20, 255, 255, 0.6);
+    border-radius: 4px;
+}
+
+.finishedMeeting {
+    background-color: rgba(125, 125, 125, 0.6);
+    border-radius: 4px;
+}
+
+.draftMeeting {
+    background-color: rgba(170, 50, 255, 0.6);
+    border-radius: 4px;
+}
+.voting_openedMeeting {
+    background-color: rgba(255, 25, 30, 0.6);
+    border-radius: 4px;
+}
+
+.color_legend{
+    float: left;
+    width: 20px;
+    padding-top: 5px;
+    padding-bottom: 15px;
+    margin-right: 5px;
+}
+
+div.ui-datepicker {
+    font-size: 127.5%;
+}
+
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+    color: #808080;
+    border-color: rgba(82, 168, 236, 0.8);
+}
+
+input:focus:invalid:focus,
+textarea:focus:invalid:focus,
+select:focus:invalid:focus {
+    border-color: rgba(82, 168, 236, 0.8);
+    outline: 0;
+    outline: thin dotted \9;
+    /* IE6-9 */
+
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+
+.chat-message-content {
+    margin-left: 20px;
+}
